@@ -5,14 +5,15 @@ var cors = require('cors');
 app.use(cors())
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'public/img')
+        cb(null, 'public/img')
     },
     filename: function (req, file, cb) {
-      cb(null, Date.now() + '-' +file.originalname )
+        var filename = Date.now() + '-' +file.originalname;
+        cb(null, filename)
     }
   })
 
-  var upload = multer({ storage: storage }).array('file')
+var upload = multer({ storage: storage }).array('file')
 
 app.get('/',function(req,res){
     return res.send('Hello Server')
