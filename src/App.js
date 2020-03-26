@@ -5,7 +5,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-var thumbnails = []
+let thumbnails = [];
+
+
 
 class ImgThumbnails extends React.Component {
   render() {
@@ -28,9 +30,14 @@ class ImgThumbnails extends React.Component {
 
 
 class App extends Component {
+
+
+
   constructor(props) {
     super(props);
+    this.onClickHandler = this.onClickHandler.bind(this);
       this.state = {
+          isButtonDisabled: false,
         selectedFile: null,
         loaded:0
       }
@@ -65,8 +72,8 @@ class App extends Component {
       let files = event.target.files
       if (files.length > MAX_FILES_UPLOAD) {
          const msg = `Only ${MAX_FILES_UPLOAD} images can be uploaded at a time`
-         event.target.value = null
          toast.warn(msg)
+         event.target.value = null
          return false;
       }
       return true;
@@ -74,14 +81,14 @@ class App extends Component {
 
   checkFileSize=(event)=>{
       let files = event.target.files
-      let size = 2000000
+      const MAX_OCTET_SIZE = 2000000
       let err = [];
-      for(var x = 0; x<files.length; x++) {
-          if (files[x].size > size) {
+      for (var x = 0; x<files.length; x++) {
+          if (files[x].size > MAX_OCTET_SIZE) {
               err[x] = `${files[x].name} ${files[x].type} is too large (over 2mo), please pick a smaller file\n`;
           }
       };
-      for(var z = 0; z<err.length; z++) {// if message not same old that mean has error
+      for (var z = 0; z<err.length; z++) {// if message not same old that mean has error
     // discard selected file
           toast.error(err[z])
           event.target.value = null
@@ -106,7 +113,17 @@ class App extends Component {
         }
   }
 
+
   onClickHandler = () => {
+
+    this.setState({
+        isButtonDisabled: true
+    });
+
+    // **** here's the timeout ****
+    setTimeout(() => this.setState({ isButtonDisabled: false }), 5000);
+
+
       if (this.state.selectedFile === null || this.state.selectedFile.length === 0)
             toast.warning('please upload an image first')
       else {
@@ -121,11 +138,9 @@ class App extends Component {
                       loaded: (ProgressEvent.loaded / ProgressEvent.total*100),
                   })
               },
-          })
-          .then(res => { // then print response status
+          }).then(res => { // then print response status
               toast.success('upload success')
-          })
-          .catch(err => { // then print response status
+          }).catch(err => { // then print response status
               toast.error('upload fail')
           })
       }
@@ -149,7 +164,7 @@ class App extends Component {
 
               </div>
 
-              <button type="button" className="btn btn-success btn-block" onClick={this.onClickHandler}>Upload</button>
+              <button type="button" className="btn btn-success btn-block" disabled={this.state.isButtonDisabled} onClick={this.onClickHandler}>Upload</button>
 
 	      </div>
       </div>
