@@ -1,37 +1,44 @@
-var express = require('express');
-var app = express();
-var multer = require('multer')
-var cors = require('cors');
-app.use(cors())
-var storage = multer.diskStorage({
+let express = require('express');
+let app = express();
+let multer = require('multer')
+let cors = require('cors');
+
+let current_img = ""
+const FILEPATH = 'public/img'
+/* storage definition */
+let storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/img')
+        cb(null, FILEPATH)
     },
     filename: function (req, file, cb) {
-        var filename = Date.now() + '-' +file.originalname;
+        let filename = Date.now() + '_' +file.originalname;
+        current_img = filename
         cb(null, filename)
     }
   })
 
-var upload = multer({ storage: storage }).array('file')
+let upload = multer({ storage: storage }).array('file')
+
+/* POST request */
+app.use(cors())
+app.use('/public/img', express.static("img"))
 
 app.get('/',function(req,res){
     return res.send('Hello Server')
 })
+
+app.get('/getimage',function(req,res){
+    return res.send(current_image)
+})
+
 app.post('/upload',function(req, res) {
-
     upload(req, res, function (err) {
-
-        if (err instanceof multer.MulterError) {
+        // A Multer error occurred when uploading or An unknown error occurred when uploading.
+        if (err instanceof multer.MulterError || err) {
             return res.status(500).json(err)
-          // A Multer error occurred when uploading.
-        } else if (err) {
-            return res.status(500).json(err)
-          // An unknown error occurred when uploading.
         }
-
-        return res.status(200).send(req.file)
-        // Everything went fine.
+        //console.log(res)
+        return res.status(200).send(current_img) // Everything went fine.
       })
 });
 

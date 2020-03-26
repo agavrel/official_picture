@@ -23,7 +23,7 @@ class ImgThumbnails extends React.Component {
           )
 
 
-    return null;
+    return <div></div>;
   }
 }
 
@@ -39,7 +39,8 @@ class App extends Component {
       this.state = {
           isButtonDisabled: false,
         selectedFile: null,
-        loaded:0
+        loaded:0,
+        thumbnails:[]
       }
 
   }
@@ -115,36 +116,40 @@ class App extends Component {
 
 
   onClickHandler = () => {
-
     this.setState({
         isButtonDisabled: true
     });
-
-    // **** here's the timeout ****
     setTimeout(() => this.setState({ isButtonDisabled: false }), 5000);
 
 
-      if (this.state.selectedFile === null || this.state.selectedFile.length === 0)
-            toast.warning('please upload an image first')
-      else {
-          console.log(this.state.selectedFile)
-          const data = new FormData()
-          for(var x = 0; x<this.state.selectedFile.length; x++) {
-              data.append('file', this.state.selectedFile[x])
-          }
-          axios.post("http://localhost:8000/upload", data, {
-              onUploadProgress: ProgressEvent => {
-                  this.setState({
-                      loaded: (ProgressEvent.loaded / ProgressEvent.total*100),
-                  })
-              },
-          }).then(res => { // then print response status
-              toast.success('upload success')
-          }).catch(err => { // then print response status
-              toast.error('upload fail')
-          })
-      }
-  }
+    if (this.state.selectedFile === null || this.state.selectedFile.length === 0)
+        toast.warning('please upload an image first')
+    else {
+        const URL = "http://localhost:8000/upload"
+        console.log(this.state.selectedFile)
+        const data = new FormData()
+        for (let x = 0; x<this.state.selectedFile.length; x++) {
+            data.append('file', this.state.selectedFile[x])
+        }
+        axios({
+            method: 'post',
+            url: URL,
+            data: data,
+            config: { headers: {'Content-Type': 'multipart/form-data' }},
+            onUploadProgress: ProgressEvent => {
+                this.setState({
+                    loaded: (ProgressEvent.loaded / ProgressEvent.total*100),
+               })
+            },
+        }).then(res => { // then print response status
+            console.log(res)
+            toast.success('upload success')
+            document.getElementById("UploadedPicture").src=`./img/${res.data}`;
+        }).catch(err => { // then print response status
+            toast.error('upload fail')
+        })
+    }
+}
 
   render() {
     return (
@@ -159,13 +164,13 @@ class App extends Component {
               <ImgThumbnails />
 
               <div className="form-group">
-              <ToastContainer />
-              <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded,2) }%</Progress>
+                  <ToastContainer />
+                  <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded,2) }%</Progress>
 
               </div>
 
               <button type="button" className="btn btn-success btn-block" disabled={this.state.isButtonDisabled} onClick={this.onClickHandler}>Upload</button>
-
+              <img id="UploadedPicture"></img>
 	      </div>
       </div>
       </div>
