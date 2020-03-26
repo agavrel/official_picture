@@ -15,13 +15,13 @@ class ImgThumbnails extends React.Component {
             return (
             <div>
               {thumbnails.map((value, index) => {
-                return <img  key={index} style={{maxHeight:'135px', maxWidth:'105px'}} src={value}/>
+                return <img  key={index} alt='your upload' style={{maxHeight:'135px', maxWidth:'105px', padding:'2px'}} src={value}/>
               })}
             </div>
           )
 
 
-    return <div></div>;
+    return null;
   }
 }
 
@@ -44,7 +44,7 @@ class App extends Component {
     // list allow mime type
    const types = ['image/png', 'image/jpeg', 'image/gif']
     // loop access array
-    for(var x = 0; x<files.length; x++) {
+    for(let x = 0; x<files.length; x++) {
      // compare file type find doesn't matach
          if (types.every(type => files[x].type !== type)) {
          // create error message and assign to container
@@ -78,7 +78,7 @@ class App extends Component {
       let err = [];
       for(var x = 0; x<files.length; x++) {
           if (files[x].size > size) {
-              err[x] = files[x].type+'is too large, please pick a smaller file\n';
+              err[x] = `${files[x].name} ${files[x].type} is too large (over 2mo), please pick a smaller file\n`;
           }
       };
       for(var z = 0; z<err.length; z++) {// if message not same old that mean has error
@@ -92,41 +92,43 @@ class App extends Component {
   onChangeHandler=event=>{
       var files = event.target.files
 
+      thumbnails = []
 
-
-
-      if(this.maxSelectFile(event) && this.checkMimeType(event) &&    this.checkFileSize(event)){
     // if return true allow to setState
-            thumbnails = []
+      if (this.maxSelectFile(event) && this.checkMimeType(event) && this.checkFileSize(event)) {
             for (var i=0; i<files.length;i++)
                 thumbnails.push(URL.createObjectURL(files[i]));
 
             this.setState({
                 selectedFile: files,
-                file: thumbnails[0],
                 loaded:0
             })
         }
   }
 
   onClickHandler = () => {
-      const data = new FormData()
-      for(var x = 0; x<this.state.selectedFile.length; x++) {
-          data.append('file', this.state.selectedFile[x])
+      if (this.state.selectedFile === null || this.state.selectedFile.length === 0)
+            toast.warning('please upload an image first')
+      else {
+          console.log(this.state.selectedFile)
+          const data = new FormData()
+          for(var x = 0; x<this.state.selectedFile.length; x++) {
+              data.append('file', this.state.selectedFile[x])
+          }
+          axios.post("http://localhost:8000/upload", data, {
+              onUploadProgress: ProgressEvent => {
+                  this.setState({
+                      loaded: (ProgressEvent.loaded / ProgressEvent.total*100),
+                  })
+              },
+          })
+          .then(res => { // then print response status
+              toast.success('upload success')
+          })
+          .catch(err => { // then print response status
+              toast.error('upload fail')
+          })
       }
-      axios.post("http://localhost:8000/upload", data, {
-          onUploadProgress: ProgressEvent => {
-              this.setState({
-                  loaded: (ProgressEvent.loaded / ProgressEvent.total*100),
-              })
-          },
-      })
-      .then(res => { // then print response status
-          toast.success('upload success')
-      })
-      .catch(err => { // then print response status
-          toast.error('upload fail')
-      })
   }
 
   render() {
