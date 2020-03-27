@@ -7,6 +7,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 let thumbnails = [];
 
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function(){
+        document.getElementById("container").scrollIntoView({ block: 'end',  behavior: 'smooth' });
+        console.log("page loaded")
+    }, 1000);
+}, false);
+
 
 
 class ImgThumbnails extends React.Component {
@@ -30,9 +37,6 @@ class ImgThumbnails extends React.Component {
 
 
 class App extends Component {
-
-
-
   constructor(props) {
     super(props);
     this.onClickHandler = this.onClickHandler.bind(this);
@@ -131,6 +135,9 @@ class App extends Component {
         for (let x = 0; x<this.state.selectedFile.length; x++) {
             data.append('file', this.state.selectedFile[x])
         }
+
+        let picture_format = document.getElementById("picture_format").value
+        console.log(picture_format)
         axios({
             method: 'post',
             url: URL,
@@ -153,27 +160,45 @@ class App extends Component {
 
   render() {
     return (
-      <div className="container">
-	      <div className="row">
-      	  <div className="offset-md-3 col-md-6">
-               <div className="form-group files">
-                <label>Upload Your File </label>
-                <input type="file" className="form-control" multiple onChange={this.onChangeHandler}/>
+        <div>
+            <div className="parallax">
+                <h1 className="title" style={{paddingTop:'60px', fontSize: '7vh', fontWeight: 'bold', textAlign:'center'}}>Your Official Picture in one click</h1>
+                <div className="center">
 
+                    <img className="mydemoimg" src="original.png" style={{borderRadius: '6vh', height: '20vh'}} alt="osef"></img>
+                    <img className="arrow" src="arrow.png" style={{height: '20vh'}} alt="osef"></img>
+                    <img className="mydemoimg resultDemo" src="result_image.png" style={{borderRadius: '6vh', height: '20vh'}} alt="osef"></img>
+                </div>
+            </div>
+            <div className="container" id="container">
+                <div className="row">
+                <div className="offset-md-3 col-md-6">
+                    <div className="form-group files">
+                        <label className="title" style={{fontSize: '3vh'}}>Upload Your File (Drag'n'Drop)</label>
+                        <input type="file" className="form-control" multiple onChange={this.onChangeHandler}/>
+                    </div>
+                    <ImgThumbnails />
+
+                    <div className="form-group">
+                      <ToastContainer />
+                      <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded,2) }%</Progress>
+                    </div>
+
+                    <button type="button" className="btn btn-success btn-block" disabled={this.state.isButtonDisabled} onClick={this.onClickHandler}>Upload</button>
+                    <select className="select" defaultValue='.jpg' id="picture_format" >
+                        <option>.jpg</option>
+                        <option>.png</option>
+                        <option>.gif</option>
+                        <option>.bmp</option>
+                        <option>.svf</option>
+                    </select>
+                    <img id="UploadedPicture" alt="processed"></img>
+                    <img url="arrow.png"></img>
+        	      </div>
               </div>
-              <ImgThumbnails />
-
-              <div className="form-group">
-                  <ToastContainer />
-                  <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded,2) }%</Progress>
-
-              </div>
-
-              <button type="button" className="btn btn-success btn-block" disabled={this.state.isButtonDisabled} onClick={this.onClickHandler}>Upload</button>
-              <img id="UploadedPicture" alt="processed"></img>
-	      </div>
+          </div>
       </div>
-      </div>
+
     );
   }
 }

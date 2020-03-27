@@ -1,4 +1,5 @@
 body {
+    background-image: url("./background2.jpg");
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -14,12 +15,43 @@ code {
 
 
 
+.parallax {
+  /* The image used */
+  background-image: url("./background.jpg");
 
+  /* Set a specific height */
+  height: 1200px;
 
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 
-/******************************************************************************/
-/* drag and drop area css */
+.center {
+    vertical-align: baseline;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position:absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    margin: auto;
+}
 
+.resultDemo {
+    filter: grayscale(1);
+}
 
+.resultDemo {
+    filter: grayscale(0);
+    transition-property: filter;
+    transition-duration: 3s;
+}
 
-/******************************************************************************/
+.title {
+    padding-top: 20px;
+    font: 400 130px/0.8 'Great Vibes', Helvetica, sans-serif;
+    color: #191970;
+    text-shadow: 5px 5px 3px rgba(0,0,0,0.1);
+}

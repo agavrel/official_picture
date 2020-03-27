@@ -38,8 +38,12 @@ app.post('/upload',function(req, res) {
         if (err instanceof multer.MulterError || err) {
             return res.status(500).json(err)
         }
-        let img_result = 'res.png'
-        let cmd = `convert -resize 48x48 '${FILEPATH}/${current_img}' '${FILEPATH}/${img_result}'`
+        let img_result = ['res.jpg', 'res2.jpg']
+//convert -resize 48x48 '${FILEPATH}/${current_img}' '${FILEPATH}/${img_result[0]}'
+        let cmd = `
+                    convert -resize 600x600 -units PixelsPerInch -density 300 '${FILEPATH}/${current_img}' '${FILEPATH}/${img_result[0]}' &&
+                    identify -format "%w x %h %x x %y" '${FILEPATH}/${img_result[0]}'`
+
         console.log(cmd)
         exec(cmd, (error, stdout, stderr) => {
             if (error) {
@@ -51,6 +55,7 @@ app.post('/upload',function(req, res) {
                 return;
             }
             console.log(`stdout: ${stdout}`);
+
             return res.status(200).send(img_result) // Everything went fine.
         });
 
