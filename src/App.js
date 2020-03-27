@@ -170,7 +170,7 @@ class App extends Component {
               </div>
 
               <button type="button" className="btn btn-success btn-block" disabled={this.state.isButtonDisabled} onClick={this.onClickHandler}>Upload</button>
-              <img id="UploadedPicture"></img>
+              <img id="UploadedPicture" alt="processed"></img>
 	      </div>
       </div>
       </div>
