@@ -174,7 +174,7 @@ class App extends Component {
                 <div className="row">
                 <div className="offset-md-3 col-md-6">
                     <div className="form-group files">
-                        <label className="title" style={{fontSize: '3vh'}}>Upload Your File (Drag'n'Drop)</label>
+                        <label className="title" style={{fontSize: '3vh'}}>Upload Your File</label>
                         <input type="file" className="form-control" multiple onChange={this.onChangeHandler}/>
                     </div>
                     <ImgThumbnails />
@@ -183,8 +183,7 @@ class App extends Component {
                       <ToastContainer />
                       <Progress max="100" color="success" value={this.state.loaded} >{Math.round(this.state.loaded,2) }%</Progress>
                     </div>
-
-                    <button type="button" className="btn btn-success btn-block" disabled={this.state.isButtonDisabled} onClick={this.onClickHandler}>Upload</button>
+                    <label className="title" style={{fontSize: '3vh'}}>Choose desired image format:              '</label>
                     <select className="select" defaultValue='.jpg' id="picture_format" >
                         <option>.jpg</option>
                         <option>.png</option>
@@ -192,6 +191,8 @@ class App extends Component {
                         <option>.bmp</option>
                         <option>.svf</option>
                     </select>
+                    <button type="button" className="btn btn-success btn-block" disabled={this.state.isButtonDisabled} onClick={this.onClickHandler}>Upload</button>
+
                     <img id="UploadedPicture" alt="processed"></img>
                     <img url="arrow.png"></img>
         	      </div>
