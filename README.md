@@ -11,7 +11,24 @@
 > Semantic segmentation refers to the process of linking each pixel in an image to a class label. These labels could include a person, car, flower, piece of furniture, etc., just to mention a few.
 We can think of semantic segmentation as image classification at a pixel level. For example, in an image that has many cars, segmentation will label all the objects as car objects. However, a separate class of models known as instance segmentation is able to label the separate instances where an object appears in an image. This kind of segmentation can be very useful in applications that are used to count the number of objects, such as counting the amount of foot traffic in a mall.
 
-### [OpenCV code samples](https://github.com/opencv/opencv/tree/master/samples/cpp/tutorial_code)
+### OpenCV, Installation steps on Ubuntu
+
+```
+git clone https://github.com/opencv/opencv.git
+cd ~/opencv && mkdir release && cd release
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D GLIBCXX_USE_CXX11_ABI=0 ..
+make
+sudo make install
+```
+
+NB: When compiling c++ do not forget to include required opencv libraries with:
+```
+g++ $1 -I/opencv2/include/ -lopencv_core -lopencv_highgui -lopencv_imgcodecs -lopencv_imgproc -lopencv_videoio
+```
+
+[OpenCV code samples](https://github.com/opencv/opencv/tree/master/samples/cpp/tutorial_code)
+
+
 
 ### Load, Change to Greyscale and Save an Image
 
@@ -380,3 +397,7 @@ https://stackoverflow.com/questions/57125006/improve-optimize-accuracy-of-findin
 ### Edge Detection
 
 https://www.sicara.ai/blog/2019-03-12-edge-detection-in-opencv
+
+### Hogwart Invisibility Cloak
+
+https://www.learnopencv.com/invisibility-cloak-using-color-detection-and-segmentation-with-opencv/
